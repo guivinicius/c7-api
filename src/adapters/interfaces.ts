@@ -6,6 +6,7 @@ export interface RequestConfig {
     password: string;
   };
   params?: Record<string, any>;
+  debug?: boolean;
 }
 
 export interface RequestOptions {

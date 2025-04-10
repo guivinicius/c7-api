@@ -1,33 +1,37 @@
 import { Commerce7Client } from '../../client';
-import { PaginatedResponse } from '../../common/types/pagination';
-import { Collection } from './types';
+import { Collection, CollectionListResponse, CollectionStatus } from './types';
 
 export class CollectionsAPI extends Commerce7Client {
   async list(params?: {
-    offset?: number;
     limit?: number;
-    status?: string;
-  }): Promise<PaginatedResponse<Collection>> {
-    return this.getRequest<PaginatedResponse<Collection>>('/collections', params);
+    q?: string;
+    webStatus?: CollectionStatus;
+  }): Promise<CollectionListResponse> {
+    return this.getRequest<CollectionListResponse>('/collection', params);
   }
 
   async get(collectionId: string): Promise<Collection> {
-    return this.getRequest<Collection>(`/collections/${collectionId}`);
+    return this.getRequest<Collection>(`/collection/${collectionId}`);
   }
 
   async create(collection: Partial<Collection>): Promise<Collection> {
-    return this.postRequest<Collection>('/collections', collection);
+    return this.postRequest<Collection>('/collection', collection);
   }
 
   async update(collectionId: string, collection: Partial<Collection>): Promise<Collection> {
-    return this.putRequest<Collection>(`/collections/${collectionId}`, collection);
+    return this.putRequest<Collection>(`/collection/${collectionId}`, collection);
   }
 
   async delete(collectionId: string): Promise<void> {
-    return this.deleteRequest(`/collections/${collectionId}`);
+    return this.deleteRequest(`/collection/${collectionId}`);
   }
 
-  async getByHandle(handle: string): Promise<Collection> {
-    return this.getRequest<Collection>(`/collections/handle/${handle}`);
+  async getBySlug(slug: string): Promise<Collection> {
+    const response = await this.list({ q: slug });
+    const collection = response.collections.find(c => c.slug === slug);
+    if (!collection) {
+      throw new Error(`Collection with slug ${slug} not found`);
+    }
+    return collection;
   }
 }

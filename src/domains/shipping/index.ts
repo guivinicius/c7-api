@@ -1,6 +1,6 @@
 import { Commerce7Client } from '../../client';
-import { PaginatedResponse } from '../../common/types/pagination';
-import { ShippingZone } from './types';
+import { ListResponse } from '../../common/types/pagination';
+import { ShippingZone, ShippingZoneListResponse } from './types';
 
 export class ShippingAPI extends Commerce7Client {
   async list(params?: {
@@ -8,8 +8,8 @@ export class ShippingAPI extends Commerce7Client {
     limit?: number;
     country?: string;
     region?: string;
-  }): Promise<PaginatedResponse<ShippingZone>> {
-    return this.getRequest<PaginatedResponse<ShippingZone>>('/shipping', params);
+  }): Promise<ShippingZoneListResponse> {
+    return this.getRequest<ShippingZoneListResponse>('/shipping', params);
   }
 
   async get(zoneId: string): Promise<ShippingZone> {
@@ -26,14 +26,5 @@ export class ShippingAPI extends Commerce7Client {
 
   async delete(zoneId: string): Promise<void> {
     return this.deleteRequest(`/shipping/${zoneId}`);
-  }
-
-  async getRates(params: {
-    country: string;
-    region?: string;
-    subtotal: number;
-    weight?: number;
-  }): Promise<ShippingZone[]> {
-    return this.getRequest<ShippingZone[]>('/shipping/rates', params);
   }
 }

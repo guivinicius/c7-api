@@ -7,27 +7,23 @@ export class TagsAPI extends Commerce7Client {
     offset?: number;
     limit?: number;
     entityType?: string;
-  }): Promise<PaginatedResponse<Tag>> {
-    return this.getRequest<PaginatedResponse<Tag>>('/tags', params);
+  }): Promise<PaginatedResponse<Tag, 'tags'>> {
+    return this.getRequest<PaginatedResponse<Tag, 'tags'>>('/tag', params);
   }
 
   async get(tagId: string): Promise<Tag> {
-    return this.getRequest<Tag>(`/tags/${tagId}`);
+    return this.getRequest<Tag>(`/tag/${tagId}`);
   }
 
   async create(tag: Partial<Tag>): Promise<Tag> {
-    return this.postRequest<Tag>('/tags', tag);
+    return this.postRequest<Tag>('/tag', tag);
   }
 
   async update(tagId: string, tag: Partial<Tag>): Promise<Tag> {
-    return this.putRequest<Tag>(`/tags/${tagId}`, tag);
+    return this.putRequest<Tag>(`/tag/${tagId}`, tag);
   }
 
   async delete(tagId: string): Promise<void> {
-    return this.deleteRequest(`/tags/${tagId}`);
-  }
-
-  async listByEntity(entityType: string, entityId: string): Promise<Tag[]> {
-    return this.getRequest<Tag[]>(`/tags/${entityType}/${entityId}`);
+    return this.deleteRequest(`/tag/${tagId}`);
   }
 }

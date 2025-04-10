@@ -1,10 +1,9 @@
 export interface Note {
   id: string;
+  type: 'Note';
+  noteDate: string;
   content: string;
-  type: string;
-  authorId: string;
-  entityId: string;
-  entityType: string;
+  customerId: string;
   createdAt: string;
   updatedAt: string;
 }

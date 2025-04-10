@@ -1,30 +1,27 @@
 import { Commerce7Client } from '../../client';
-import { PaginatedResponse } from '../../common/types/pagination';
-import { Club } from './types';
+import { Club, ClubListResponse } from './types';
 
 export class ClubsAPI extends Commerce7Client {
   async list(params?: {
-    offset?: number;
     limit?: number;
-    status?: string;
-    type?: string;
-  }): Promise<PaginatedResponse<Club>> {
-    return this.getRequest<PaginatedResponse<Club>>('/clubs', params);
+    q?: string;
+  }): Promise<ClubListResponse> {
+    return this.getRequest<ClubListResponse>('/club', params);
   }
 
   async get(clubId: string): Promise<Club> {
-    return this.getRequest<Club>(`/clubs/${clubId}`);
+    return this.getRequest<Club>(`/club/${clubId}`);
   }
 
   async create(club: Partial<Club>): Promise<Club> {
-    return this.postRequest<Club>('/clubs', club);
+    return this.postRequest<Club>('/club', club);
   }
 
   async update(clubId: string, club: Partial<Club>): Promise<Club> {
-    return this.putRequest<Club>(`/clubs/${clubId}`, club);
+    return this.putRequest<Club>(`/club/${clubId}`, club);
   }
 
   async delete(clubId: string): Promise<void> {
-    return this.deleteRequest(`/clubs/${clubId}`);
+    return this.deleteRequest(`/club/${clubId}`);
   }
 }

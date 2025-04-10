@@ -7,8 +7,22 @@ export class BrowserHTTPAdapter implements HTTPAdapter {
     this.config = config;
   }
 
+  private logDebug(message: string, data?: any) {
+    if (this.config.debug) {
+      console.log('%c[Commerce7 Debug]:', 'color: #36f', message);
+      if (data) {
+        console.dir(data, { depth: null });
+      }
+    }
+  }
+
   private buildURL(endpoint: string, params?: Record<string, any>): string {
-    const url = new URL(endpoint, this.config.baseURL);
+    // Ensure endpoint starts with forward slash
+    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    
+    // Create URL without modifying the base URL's path
+    const url = new URL(this.config.baseURL);
+    url.pathname = url.pathname.replace(/\/$/, '') + normalizedEndpoint;
     
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -42,19 +56,47 @@ export class BrowserHTTPAdapter implements HTTPAdapter {
       body: options.data ? JSON.stringify(options.data) : undefined,
     };
 
-    const response = await fetch(url, fetchOptions);
-    const data = await response.json().catch(() => undefined);
+    this.logDebug('Request:', {
+      url,
+      method: options.method,
+      headers: Object.fromEntries(headers.entries()),
+      params: options.params,
+      data: options.data
+    });
 
-    const result: HTTPResponse = {
-      data,
-      status: response.status,
-      headers: Object.fromEntries(response.headers.entries()),
-    };
+    try {
+      const response = await fetch(url, fetchOptions);
+      const responseHeaders = Object.fromEntries(response.headers.entries());
+      let data;
+      
+      try {
+        data = await response.json();
+      } catch (e) {
+        data = undefined;
+      }
 
-    if (!response.ok) {
-      throw new Error(`HTTP Error: ${result.status} - ${JSON.stringify(result.data)}`);
+      const result: HTTPResponse = {
+        data,
+        status: response.status,
+        headers: responseHeaders,
+      };
+
+      this.logDebug('Response:', {
+        status: result.status,
+        headers: result.headers,
+        data: result.data
+      });
+
+      if (!response.ok) {
+        const error = new Error(`HTTP Error: ${result.status} - ${JSON.stringify(result.data)}`);
+        this.logDebug('Error:', error);
+        throw error;
+      }
+
+      return result;
+    } catch (error) {
+      this.logDebug('Network Error:', error);
+      throw error;
     }
-
-    return result;
   }
 }

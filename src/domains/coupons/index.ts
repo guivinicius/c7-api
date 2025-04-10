@@ -1,41 +1,27 @@
 import { Commerce7Client } from '../../client';
-import { PaginatedResponse } from '../../common/types/pagination';
-import { Coupon } from './types';
+import { Coupon, CouponListResponse } from './types';
 
 export class CouponsAPI extends Commerce7Client {
   async list(params?: {
-    offset?: number;
     limit?: number;
-    status?: string;
-    code?: string;
-  }): Promise<PaginatedResponse<Coupon>> {
-    return this.getRequest<PaginatedResponse<Coupon>>('/coupons', params);
+    q?: string;
+  }): Promise<CouponListResponse> {
+    return this.getRequest<CouponListResponse>('/coupon', params);
   }
 
   async get(couponId: string): Promise<Coupon> {
-    return this.getRequest<Coupon>(`/coupons/${couponId}`);
+    return this.getRequest<Coupon>(`/coupon/${couponId}`);
   }
 
   async create(coupon: Partial<Coupon>): Promise<Coupon> {
-    return this.postRequest<Coupon>('/coupons', coupon);
+    return this.postRequest<Coupon>('/coupon', coupon);
   }
 
   async update(couponId: string, coupon: Partial<Coupon>): Promise<Coupon> {
-    return this.putRequest<Coupon>(`/coupons/${couponId}`, coupon);
+    return this.putRequest<Coupon>(`/coupon/${couponId}`, coupon);
   }
 
   async delete(couponId: string): Promise<void> {
-    return this.deleteRequest(`/coupons/${couponId}`);
-  }
-
-  async getByCode(code: string): Promise<Coupon> {
-    return this.getRequest<Coupon>(`/coupons/code/${code}`);
-  }
-
-  async validate(code: string, params?: {
-    subtotal?: number;
-    customerId?: string;
-  }): Promise<Coupon> {
-    return this.getRequest<Coupon>(`/coupons/validate/${code}`, params);
+    return this.deleteRequest(`/coupon/${couponId}`);
   }
 }

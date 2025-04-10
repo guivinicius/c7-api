@@ -1,3 +1,5 @@
+import { ListResponse } from '../../common/types/pagination';
+
 export interface ShippingZone {
   id: string;
   name: string;
@@ -20,3 +22,5 @@ export interface ShippingCondition {
   operator: string;
   value: number;
 }
+
+export type ShippingZoneListResponse = ListResponse<ShippingZone, 'shippings'>;

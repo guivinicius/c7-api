@@ -3,7 +3,7 @@ import { BrowserHTTPAdapter } from '../../adapters/browser';
 describe('BrowserHTTPAdapter', () => {
   let adapter: BrowserHTTPAdapter;
   const mockConfig = {
-    baseURL: 'http://api.example.com',
+    baseURL: 'http://api.example.com/v1',
     headers: { 'Content-Type': 'application/json' },
     auth: {
       username: 'test-client',
@@ -15,6 +15,72 @@ describe('BrowserHTTPAdapter', () => {
     adapter = new BrowserHTTPAdapter(mockConfig);
     // Clear fetch mocks between tests
     (global as any).fetch = jest.fn();
+  });
+
+  describe('URL Construction', () => {
+    it('should correctly construct URL with endpoint that has leading slash', async () => {
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: () => Promise.resolve({ data: 'test' })
+      };
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce(mockResponse);
+
+      await adapter.request({
+        method: 'GET',
+        endpoint: '/test'
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://api.example.com/v1/test',
+        expect.any(Object)
+      );
+    });
+
+    it('should correctly construct URL with endpoint that has no leading slash', async () => {
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: () => Promise.resolve({ data: 'test' })
+      };
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce(mockResponse);
+
+      await adapter.request({
+        method: 'GET',
+        endpoint: 'test'
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://api.example.com/v1/test',
+        expect.any(Object)
+      );
+    });
+
+    it('should correctly append query parameters', async () => {
+      const mockResponse = {
+        ok: true,
+        status: 200,
+        headers: new Headers({ 'content-type': 'application/json' }),
+        json: () => Promise.resolve({ data: 'test' })
+      };
+
+      (global.fetch as jest.Mock).mockResolvedValueOnce(mockResponse);
+
+      await adapter.request({
+        method: 'GET',
+        endpoint: '/test',
+        params: { page: 1, limit: 10 }
+      });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://api.example.com/v1/test?page=1&limit=10',
+        expect.any(Object)
+      );
+    });
   });
 
   it('should make GET request successfully', async () => {
@@ -33,7 +99,7 @@ describe('BrowserHTTPAdapter', () => {
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://api.example.com/test',
+      'http://api.example.com/v1/test',
       expect.objectContaining({
         method: 'GET',
         headers: expect.any(Headers)
@@ -60,7 +126,7 @@ describe('BrowserHTTPAdapter', () => {
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://api.example.com/test',
+      'http://api.example.com/v1/test',
       expect.objectContaining({
         method: 'POST',
         body: JSON.stringify({ name: 'test' }),
@@ -88,7 +154,7 @@ describe('BrowserHTTPAdapter', () => {
     });
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'http://api.example.com/test?page=1&limit=10',
+      'http://api.example.com/v1/test?page=1&limit=10',
       expect.any(Object)
     );
   });

@@ -1,3 +1,5 @@
+import { ListResponse } from '../../common/types/pagination';
+
 export type ProductType = 'Wine' | 'Spirit' | 'Beer' | 'Food' | 'Merchandise' | 'Experience' | 'Other';
 export type ProductStatus = 'Available' | 'Unavailable' | 'Hidden' | 'Coming Soon' | 'Sold Out';
 export type WineType = 'Red' | 'White' | 'Rosé' | 'Sparkling' | 'Dessert';
@@ -105,3 +107,5 @@ export interface Product {
   security: ProductSecurity;
   overrideOperatingRegions: ProductOperatingRegions;
 }
+
+export type ProductListResponse = ListResponse<Product, 'product'>;

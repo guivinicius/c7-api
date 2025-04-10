@@ -7,30 +7,30 @@ export class PromotionsAPI extends Commerce7Client {
     offset?: number;
     limit?: number;
     status?: string;
-  }): Promise<PaginatedResponse<Promotion>> {
-    return this.getRequest<PaginatedResponse<Promotion>>('/promotions', params);
+  }): Promise<PaginatedResponse<Promotion, 'promotions'>> {
+    return this.getRequest<PaginatedResponse<Promotion, 'promotions'>>('/promotion', params);
   }
 
   async get(promotionId: string): Promise<Promotion> {
-    return this.getRequest<Promotion>(`/promotions/${promotionId}`);
+    return this.getRequest<Promotion>(`/promotion/${promotionId}`);
   }
 
   async create(promotion: Partial<Promotion>): Promise<Promotion> {
-    return this.postRequest<Promotion>('/promotions', promotion);
+    return this.postRequest<Promotion>('/promotion', promotion);
   }
 
   async update(promotionId: string, promotion: Partial<Promotion>): Promise<Promotion> {
-    return this.putRequest<Promotion>(`/promotions/${promotionId}`, promotion);
+    return this.putRequest<Promotion>(`/promotion/${promotionId}`, promotion);
   }
 
   async delete(promotionId: string): Promise<void> {
-    return this.deleteRequest(`/promotions/${promotionId}`);
+    return this.deleteRequest(`/promotion/${promotionId}`);
   }
 
   async validate(promotionId: string, params?: {
     subtotal?: number;
     customerId?: string;
   }): Promise<Promotion> {
-    return this.getRequest<Promotion>(`/promotions/${promotionId}/validate`, params);
+    return this.getRequest<Promotion>(`/promotion/${promotionId}/validate`, params);
   }
 }

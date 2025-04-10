@@ -4,35 +4,25 @@ import { GiftCard } from './types';
 
 export class GiftCardsAPI extends Commerce7Client {
   async list(params?: {
-    offset?: number;
     limit?: number;
-    status?: string;
-    code?: string;
-  }): Promise<PaginatedResponse<GiftCard>> {
-    return this.getRequest<PaginatedResponse<GiftCard>>('/gift-cards', params);
+    q?: string;
+  }): Promise<PaginatedResponse<GiftCard, 'giftCards'>> {
+    return this.getRequest<PaginatedResponse<GiftCard, 'giftCards'>>('/gift-card', params);
   }
 
   async get(giftCardId: string): Promise<GiftCard> {
-    return this.getRequest<GiftCard>(`/gift-cards/${giftCardId}`);
+    return this.getRequest<GiftCard>(`/gift-card/${giftCardId}`);
   }
 
   async create(giftCard: Partial<GiftCard>): Promise<GiftCard> {
-    return this.postRequest<GiftCard>('/gift-cards', giftCard);
+    return this.postRequest<GiftCard>('/gift-card', giftCard);
   }
 
   async update(giftCardId: string, giftCard: Partial<GiftCard>): Promise<GiftCard> {
-    return this.putRequest<GiftCard>(`/gift-cards/${giftCardId}`, giftCard);
+    return this.putRequest<GiftCard>(`/gift-card/${giftCardId}`, giftCard);
   }
 
   async delete(giftCardId: string): Promise<void> {
-    return this.deleteRequest(`/gift-cards/${giftCardId}`);
-  }
-
-  async getByCode(code: string): Promise<GiftCard> {
-    return this.getRequest<GiftCard>(`/gift-cards/code/${code}`);
-  }
-
-  async redeem(giftCardId: string, amount: number): Promise<GiftCard> {
-    return this.postRequest<GiftCard>(`/gift-cards/${giftCardId}/redeem`, { amount });
+    return this.deleteRequest(`/gift-card/${giftCardId}`);
   }
 }

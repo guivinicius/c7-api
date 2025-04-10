@@ -1,28 +1,24 @@
 import { Commerce7Client } from '../../client';
 import { PaginatedResponse } from '../../common/types/pagination';
-import { InventoryLevel } from './types';
+import { Inventory, InitializeInventoryInput, InventoryTransaction, CreateInventoryTransactionInput } from './types';
 
 export class InventoryAPI extends Commerce7Client {
   async list(params?: {
-    offset?: number;
     limit?: number;
-    productId?: string;
-    variantId?: string;
-    locationId?: string;
-  }): Promise<PaginatedResponse<InventoryLevel>> {
-    return this.getRequest<PaginatedResponse<InventoryLevel>>('/inventory', params);
+    q?: string;
+  }): Promise<PaginatedResponse<Inventory, 'inventories'>> {
+    return this.getRequest<PaginatedResponse<Inventory, 'inventories'>>('/inventory', params);
   }
 
-  async get(inventoryId: string): Promise<InventoryLevel> {
-    return this.getRequest<InventoryLevel>(`/inventory/${inventoryId}`);
+  async get(inventoryId: string): Promise<Inventory> {
+    return this.getRequest<Inventory>(`/inventory/${inventoryId}`);
   }
 
-  async adjust(inventoryId: string, quantity: number, reason?: string): Promise<InventoryLevel> {
-    return this.postRequest<InventoryLevel>(`/inventory/${inventoryId}/adjust`, { quantity, reason });
+  async initialize(initializeInventory: InitializeInventoryInput): Promise<Inventory> {
+    return this.postRequest<Inventory>('/inventory', initializeInventory);
   }
 
-  async getByProductVariant(productId: string, variantId: string, locationId?: string): Promise<InventoryLevel> {
-    const params = locationId ? { locationId } : undefined;
-    return this.getRequest<InventoryLevel>(`/inventory/product/${productId}/variant/${variantId}`, params);
+  async createInventoryTransaction(inventoryTransaction: CreateInventoryTransactionInput): Promise<InventoryTransaction> {
+    return this.postRequest<InventoryTransaction>('/inventory-transaction', inventoryTransaction);
   }
 }

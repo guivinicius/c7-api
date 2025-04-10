@@ -10,8 +10,22 @@ export class NodeHTTPAdapter implements HTTPAdapter {
     this.config = config;
   }
 
+  private logDebug(message: string, data?: any) {
+    if (this.config.debug) {
+      console.log('\x1b[36m%s\x1b[0m', '[Commerce7 Debug]:', message);
+      if (data) {
+        console.dir(data, { depth: null, colors: true });
+      }
+    }
+  }
+
   private buildURL(endpoint: string, params?: Record<string, any>): string {
-    const url = new URL(endpoint, this.config.baseURL);
+    // Ensure endpoint starts with forward slash
+    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    
+    // Create URL without modifying the base URL's path
+    const url = new URL(this.config.baseURL);
+    url.pathname = url.pathname.replace(/\/$/, '') + normalizedEndpoint;
     
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -43,6 +57,14 @@ export class NodeHTTPAdapter implements HTTPAdapter {
       requestOptions.headers!['Authorization'] = `Basic ${authString}`;
     }
 
+    this.logDebug('Request:', {
+      url,
+      method: options.method,
+      headers: requestOptions.headers,
+      params: options.params,
+      data: options.data
+    });
+
     return new Promise((resolve, reject) => {
       const req = (urlObj.protocol === 'https:' ? https : http).request(
         url,
@@ -61,16 +83,27 @@ export class NodeHTTPAdapter implements HTTPAdapter {
               headers: res.headers as Record<string, string>,
             };
 
+            this.logDebug('Response:', {
+              status: response.status,
+              headers: response.headers,
+              data: response.data
+            });
+
             if (response.status >= 200 && response.status < 300) {
               resolve(response);
             } else {
-              reject(new Error(`HTTP Error: ${response.status} - ${JSON.stringify(response.data)}`));
+              const error = new Error(`HTTP Error: ${response.status} - ${JSON.stringify(response.data)}`);
+              this.logDebug('Error:', error);
+              reject(error);
             }
           });
         }
       );
 
-      req.on('error', reject);
+      req.on('error', (error) => {
+        this.logDebug('Network Error:', error);
+        reject(error);
+      });
 
       if (options.data) {
         req.write(JSON.stringify(options.data));

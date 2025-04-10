@@ -2,7 +2,6 @@
 export * from './client';
 
 // Re-export all domain APIs
-export * from './domains/apps';
 export * from './domains/clubs';
 export * from './domains/collections';
 export * from './domains/coupons';
@@ -10,6 +9,7 @@ export * from './domains/customers';
 export * from './domains/departments';
 export * from './domains/gift-cards';
 export * from './domains/inventory';
+export * from './domains/inventory-location';
 export * from './domains/notes';
 export * from './domains/orders';
 export * from './domains/products';
@@ -22,7 +22,6 @@ export * from './domains/vendors';
 export * from './domains/webhooks';
 
 // Re-export domain-specific types
-export * from './domains/apps/types';
 export * from './domains/clubs/types';
 export * from './domains/collections/types';
 export * from './domains/coupons/types';
@@ -30,6 +29,7 @@ export * from './domains/customers/types';
 export * from './domains/departments/types';
 export * from './domains/gift-cards/types';
 export * from './domains/inventory/types';
+export * from './domains/inventory-location/types';
 export * from './domains/notes/types';
 export * from './domains/orders/types';
 export * from './domains/products/types';

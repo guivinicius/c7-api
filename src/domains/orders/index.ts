@@ -4,42 +4,36 @@ import { Order } from './types';
 
 export class OrdersAPI extends Commerce7Client {
   async list(params?: {
-    offset?: number;
     limit?: number;
-    query?: string;
-    status?: string;
+    q?: string;
+    id?: string;
     customerId?: string;
-    fromDate?: string;
-    toDate?: string;
-  }): Promise<PaginatedResponse<Order>> {
-    return this.getRequest<PaginatedResponse<Order>>('/orders', params);
+    orderTagId?: string;
+    posProfileId?: string;
+    tagId?: string;
+    allocationId?: string;
+    queryId?: string;
+    updatedAt?: string;
+    orderPaidDate?: string;
+    orderFulfilledDate?: string;
+    orderSubmittedDate?: string;
+    fulfillmentStatus?: 'Fulfilled' | 'Not Fulfilled' | 'Partially Fulfilled' | 'No Fulfillment Required';
+    complianceStatus?: 'Compliant' | 'Forced' | 'Not Checked' | 'No Compliance Required' | 'Quarantined' | 'Void';
+    channel?: 'Inbound' | 'Web' | 'POS' | 'Club';
+    orderDeliveryMethod?: 'Pickup' | 'Carry Out' | 'Ship';
+  }): Promise<PaginatedResponse<Order, 'orders'>> {
+    return this.getRequest<PaginatedResponse<Order, 'orders'>>('/order', params);
   }
 
   async get(orderId: string): Promise<Order> {
-    return this.getRequest<Order>(`/orders/${orderId}`);
+    return this.getRequest<Order>(`/order/${orderId}`);
   }
 
   async create(order: Partial<Order>): Promise<Order> {
-    return this.postRequest<Order>('/orders', order);
+    return this.postRequest<Order>('/order', order);
   }
 
-  async update(orderId: string, order: Partial<Order>): Promise<Order> {
-    return this.putRequest<Order>(`/orders/${orderId}`, order);
-  }
-
-  async delete(orderId: string): Promise<void> {
-    return this.deleteRequest(`/orders/${orderId}`);
-  }
-
-  async getByNumber(orderNumber: string): Promise<Order> {
-    return this.getRequest<Order>(`/orders/number/${orderNumber}`);
-  }
-
-  async cancel(orderId: string): Promise<Order> {
-    return this.postRequest<Order>(`/orders/${orderId}/cancel`, {});
-  }
-
-  async refund(orderId: string, amount: number, reason?: string): Promise<Order> {
-    return this.postRequest<Order>(`/orders/${orderId}/refund`, { amount, reason });
+  async updateStartingOrderNumber(startingOrderNumber: number): Promise<Order> {
+    return this.putRequest<Order>('/order-number', { orderNumber: startingOrderNumber });
   }
 }

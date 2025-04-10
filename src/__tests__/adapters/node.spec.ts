@@ -8,7 +8,7 @@ jest.mock('https');
 describe('NodeHTTPAdapter', () => {
   let adapter: NodeHTTPAdapter;
   const mockConfig = {
-    baseURL: 'http://api.example.com',
+    baseURL: 'http://api.example.com/v1',
     headers: { 'Content-Type': 'application/json' },
     auth: {
       username: 'test-client',
@@ -19,6 +19,96 @@ describe('NodeHTTPAdapter', () => {
   beforeEach(() => {
     adapter = new NodeHTTPAdapter(mockConfig);
     jest.clearAllMocks();
+  });
+
+  describe('URL Construction', () => {
+    it('should correctly construct URL with endpoint that has leading slash', async () => {
+      const mockResponse = {
+        statusCode: 200,
+        headers: { 'content-type': 'application/json' },
+        on: jest.fn().mockImplementation((event, cb) => {
+          if (event === 'data') cb(JSON.stringify({ data: 'test' }));
+          if (event === 'end') cb();
+          return mockResponse;
+        })
+      };
+
+      const mockRequest = {
+        on: jest.fn(),
+        end: jest.fn(),
+        write: jest.fn()
+      };
+
+      (http.request as jest.Mock).mockImplementation((url, options, cb) => {
+        expect(url).toBe('http://api.example.com/v1/test');
+        cb(mockResponse);
+        return mockRequest;
+      });
+
+      await adapter.request({
+        method: 'GET',
+        endpoint: '/test'
+      });
+    });
+
+    it('should correctly construct URL with endpoint that has no leading slash', async () => {
+      const mockResponse = {
+        statusCode: 200,
+        headers: { 'content-type': 'application/json' },
+        on: jest.fn().mockImplementation((event, cb) => {
+          if (event === 'data') cb(JSON.stringify({ data: 'test' }));
+          if (event === 'end') cb();
+          return mockResponse;
+        })
+      };
+
+      const mockRequest = {
+        on: jest.fn(),
+        end: jest.fn(),
+        write: jest.fn()
+      };
+
+      (http.request as jest.Mock).mockImplementation((url, options, cb) => {
+        expect(url).toBe('http://api.example.com/v1/test');
+        cb(mockResponse);
+        return mockRequest;
+      });
+
+      await adapter.request({
+        method: 'GET',
+        endpoint: 'test'
+      });
+    });
+
+    it('should correctly append query parameters', async () => {
+      const mockResponse = {
+        statusCode: 200,
+        headers: { 'content-type': 'application/json' },
+        on: jest.fn().mockImplementation((event, cb) => {
+          if (event === 'data') cb(JSON.stringify({ data: 'test' }));
+          if (event === 'end') cb();
+          return mockResponse;
+        })
+      };
+
+      const mockRequest = {
+        on: jest.fn(),
+        end: jest.fn(),
+        write: jest.fn()
+      };
+
+      (http.request as jest.Mock).mockImplementation((url, options, cb) => {
+        expect(url).toBe('http://api.example.com/v1/test?page=1&limit=10');
+        cb(mockResponse);
+        return mockRequest;
+      });
+
+      await adapter.request({
+        method: 'GET',
+        endpoint: '/test',
+        params: { page: 1, limit: 10 }
+      });
+    });
   });
 
   it('should make GET request successfully', async () => {

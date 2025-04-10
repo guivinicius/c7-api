@@ -8,31 +8,23 @@ export class TaxesAPI extends Commerce7Client {
     limit?: number;
     country?: string;
     region?: string;
-  }): Promise<PaginatedResponse<Tax>> {
-    return this.getRequest<PaginatedResponse<Tax>>('/taxes', params);
+  }): Promise<PaginatedResponse<Tax, 'taxes'>> {
+    return this.getRequest<PaginatedResponse<Tax, 'taxes'>>('/tax', params);
   }
 
   async get(taxId: string): Promise<Tax> {
-    return this.getRequest<Tax>(`/taxes/${taxId}`);
+    return this.getRequest<Tax>(`/tax/${taxId}`);
   }
 
   async create(tax: Partial<Tax>): Promise<Tax> {
-    return this.postRequest<Tax>('/taxes', tax);
+    return this.postRequest<Tax>('/tax', tax);
   }
 
   async update(taxId: string, tax: Partial<Tax>): Promise<Tax> {
-    return this.putRequest<Tax>(`/taxes/${taxId}`, tax);
+    return this.putRequest<Tax>(`/tax/${taxId}`, tax);
   }
 
   async delete(taxId: string): Promise<void> {
-    return this.deleteRequest(`/taxes/${taxId}`);
-  }
-
-  async calculate(params: {
-    country: string;
-    region?: string;
-    subtotal: number;
-  }): Promise<{ total: number; taxes: Tax[] }> {
-    return this.getRequest<{ total: number; taxes: Tax[] }>('/taxes/calculate', params);
+    return this.deleteRequest(`/tax/${taxId}`);
   }
 }

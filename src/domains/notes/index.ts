@@ -4,34 +4,27 @@ import { Note } from './types';
 
 export class NotesAPI extends Commerce7Client {
   async list(params?: {
-    offset?: number;
     limit?: number;
-    entityId?: string;
-    entityType?: string;
-  }): Promise<PaginatedResponse<Note>> {
-    return this.getRequest<PaginatedResponse<Note>>('/notes', params);
+    q?: string;
+    customerId?: string;
+    orderId?: string;
+  }): Promise<PaginatedResponse<Note, 'note'>> {
+    return this.getRequest<PaginatedResponse<Note, 'note'>>('/note', params);
   }
 
   async get(noteId: string): Promise<Note> {
-    return this.getRequest<Note>(`/notes/${noteId}`);
+    return this.getRequest<Note>(`/note/${noteId}`);
   }
 
   async create(note: Partial<Note>): Promise<Note> {
-    return this.postRequest<Note>('/notes', note);
+    return this.postRequest<Note>('/note', note);
   }
 
   async update(noteId: string, note: Partial<Note>): Promise<Note> {
-    return this.putRequest<Note>(`/notes/${noteId}`, note);
+    return this.putRequest<Note>(`/note/${noteId}`, note);
   }
 
   async delete(noteId: string): Promise<void> {
-    return this.deleteRequest(`/notes/${noteId}`);
-  }
-
-  async listByEntity(entityType: string, entityId: string, params?: {
-    offset?: number;
-    limit?: number;
-  }): Promise<PaginatedResponse<Note>> {
-    return this.getRequest<PaginatedResponse<Note>>(`/notes/${entityType}/${entityId}`, params);
+    return this.deleteRequest(`/note/${noteId}`);
   }
 }
