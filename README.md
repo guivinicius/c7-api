@@ -54,3 +54,24 @@ The API wrapper includes built-in error handling that will throw errors with det
 ## Documentation
 
 For more details about the Commerce7 API, please refer to the [official documentation](https://developer.commerce7.com/docs/commerce7-developer-docs).
+
+## Release Instructions
+
+To release a new version of the package:
+
+1. Update version in `package.json`:
+```bash
+npm version patch  # for bug fixes
+npm version minor  # for new features
+npm version major  # for breaking changes
+```
+
+2. Push changes and tags:
+```bash
+git push origin main --tags
+```
+
+3. Publish to npm:
+```bash
+npm publish --access public
+```
