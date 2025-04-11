@@ -1,7 +1,12 @@
-import dotenv from 'dotenv';
-import { createHTTPAdapter, HTTPAdapter, RequestConfig } from './adapters';
+// Only import dotenv in Node.js environment
+let dotenv: any;
+if (typeof window === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  dotenv = require('dotenv');
+  dotenv.config();
+}
 
-dotenv.config();
+import { createHTTPAdapter, HTTPAdapter, RequestConfig } from './adapters';
 
 export interface Commerce7Config {
   tenantId?: string;

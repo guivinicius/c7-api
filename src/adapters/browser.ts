@@ -56,19 +56,28 @@ export class BrowserHTTPAdapter implements HTTPAdapter {
       body: options.data ? JSON.stringify(options.data) : undefined,
     };
 
+    // Convert Headers to plain object for logging
+    const headerObj: Record<string, string> = {};
+    headers.forEach((value, key) => {
+      headerObj[key] = value;
+    });
+
     this.logDebug('Request:', {
       url,
       method: options.method,
-      headers: Object.fromEntries(headers.entries()),
+      headers: headerObj,
       params: options.params,
       data: options.data
     });
 
     try {
       const response = await fetch(url, fetchOptions);
-      const responseHeaders = Object.fromEntries(response.headers.entries());
-      let data;
+      const responseHeaders: Record<string, string> = {};
+      response.headers.forEach((value, key) => {
+        responseHeaders[key] = value;
+      });
       
+      let data;
       try {
         data = await response.json();
       } catch (e) {
