@@ -1,12 +1,10 @@
 import { Commerce7Client } from '../../client';
 import { PaginatedResponse } from '../../common/types/pagination';
-import { Webhook } from './types';
+import { Webhook, WebhookInput } from './types';
 
 export class WebhooksAPI extends Commerce7Client {
   async list(params?: {
-    offset?: number;
     limit?: number;
-    status?: string;
   }): Promise<PaginatedResponse<Webhook, 'webhooks'>> {
     return this.getRequest<PaginatedResponse<Webhook, 'webhooks'>>('/webhook', params);
   }
@@ -15,11 +13,11 @@ export class WebhooksAPI extends Commerce7Client {
     return this.getRequest<Webhook>(`/webhook/${webhookId}`);
   }
 
-  async create(webhook: Partial<Webhook>): Promise<Webhook> {
+  async create(webhook: WebhookInput): Promise<Webhook> {
     return this.postRequest<Webhook>('/webhook', webhook);
   }
 
-  async update(webhookId: string, webhook: Partial<Webhook>): Promise<Webhook> {
+  async update(webhookId: string, webhook: WebhookInput): Promise<Webhook> {
     return this.putRequest<Webhook>(`/webhook/${webhookId}`, webhook);
   }
 

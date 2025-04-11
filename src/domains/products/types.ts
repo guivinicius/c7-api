@@ -1,10 +1,28 @@
 import { ListResponse } from '../../common/types/pagination';
 
-export type ProductType = 'Wine' | 'Spirit' | 'Beer' | 'Food' | 'Merchandise' | 'Experience' | 'Other';
-export type ProductStatus = 'Available' | 'Unavailable' | 'Hidden' | 'Coming Soon' | 'Sold Out';
+export type ProductType = 
+  | 'General Merchandise' 
+  | 'Tasting' 
+  | 'Wine' 
+  | 'Cannabis' 
+  | 'Bundle' 
+  | 'Reservation' 
+  | 'Event Ticket' 
+  | 'Gift Card' 
+  | 'Collateral' 
+  | 'Rebate';
+
+export type ProductStatus = 'Available' | 'Not Available' | 'Hidden' | 'Retired';
+
 export type WineType = 'Red' | 'White' | 'Rosé' | 'Sparkling' | 'Dessert';
-export type SecurityAvailability = 'Public' | 'Private' | 'Members Only';
-export type InventoryPolicy = 'Sell' | 'Dont Sell';
+
+export type SecurityAvailability = 'Public' | 'Allocation' | 'Group' | 'Club';
+
+export type SecurityDisplayOption = 'Display Product / Show Login' | 'Dont Display Product';
+
+export type InventoryPolicy = 'Back Order' | 'Dont Sell';
+
+export type TaxType = 'Food' | 'General Merchandise' | 'Wine' | 'Not Taxable' | 'Cannabis';
 
 export interface ProductImage {
   id: string;
@@ -34,7 +52,7 @@ export interface ProductVariant {
   hasInventory: boolean;
   inventoryPolicy: InventoryPolicy;
   hasShipping: boolean;
-  taxType: string;
+  taxType: TaxType;
   weight: number;
   inventory: ProductInventory[];
 }
@@ -95,7 +113,7 @@ export interface Product {
   createdAt: string;
   updatedAt: string;
   images: ProductImage[];
-  bundleItems: any[]; // Can be typed more specifically if bundle structure is known
+  bundleItems: any[];
   variants: ProductVariant[];
   tenantIds: string[];
   collections: ProductCollection[];

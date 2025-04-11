@@ -1,29 +1,27 @@
 import { Commerce7Client } from '../../client';
-import { PaginatedResponse } from '../../common/types/pagination';
-import { Tag } from './types';
+import { Tag, TagResponse, CreateTagInput, UpdateTagInput, TagObjectType } from './types';
 
 export class TagsAPI extends Commerce7Client {
-  async list(params?: {
-    offset?: number;
+  async list(objectType: TagObjectType, params?: {
     limit?: number;
-    entityType?: string;
-  }): Promise<PaginatedResponse<Tag, 'tags'>> {
-    return this.getRequest<PaginatedResponse<Tag, 'tags'>>('/tag', params);
+    q?: string;
+  }): Promise<TagResponse> {
+    return this.getRequest<TagResponse>(`/tag/${objectType}`, params);
   }
 
-  async get(tagId: string): Promise<Tag> {
-    return this.getRequest<Tag>(`/tag/${tagId}`);
+  async get(objectType: TagObjectType, tagId: string): Promise<Tag> {
+    return this.getRequest<Tag>(`/tag/${objectType}/${tagId}`);
   }
 
-  async create(tag: Partial<Tag>): Promise<Tag> {
-    return this.postRequest<Tag>('/tag', tag);
+  async create(objectType: TagObjectType, tag: CreateTagInput): Promise<Tag> {
+    return this.postRequest<Tag>(`/tag/${objectType}`, tag);
   }
 
-  async update(tagId: string, tag: Partial<Tag>): Promise<Tag> {
-    return this.putRequest<Tag>(`/tag/${tagId}`, tag);
+  async update(objectType: TagObjectType, tagId: string, tag: UpdateTagInput): Promise<Tag> {
+    return this.putRequest<Tag>(`/tag/${objectType}/${tagId}`, tag);
   }
 
-  async delete(tagId: string): Promise<void> {
-    return this.deleteRequest(`/tag/${tagId}`);
+  async delete(objectType: TagObjectType, tagId: string): Promise<void> {
+    return this.deleteRequest(`/tag/${objectType}/${tagId}`);
   }
 }

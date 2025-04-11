@@ -1,12 +1,9 @@
 export interface Vendor {
   id: string;
-  name: string;
-  description?: string;
-  status: string;
-  contact?: {
-    email?: string;
-    phone?: string;
-  };
+  title: string;
   createdAt: string;
   updatedAt: string;
 }
+
+export type CreateVendorInput = Pick<Vendor, 'title'>;
+export type UpdateVendorInput = Partial<CreateVendorInput>;

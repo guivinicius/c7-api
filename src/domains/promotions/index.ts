@@ -4,9 +4,8 @@ import { Promotion } from './types';
 
 export class PromotionsAPI extends Commerce7Client {
   async list(params?: {
-    offset?: number;
     limit?: number;
-    status?: string;
+    q?: string;
   }): Promise<PaginatedResponse<Promotion, 'promotions'>> {
     return this.getRequest<PaginatedResponse<Promotion, 'promotions'>>('/promotion', params);
   }
@@ -25,12 +24,5 @@ export class PromotionsAPI extends Commerce7Client {
 
   async delete(promotionId: string): Promise<void> {
     return this.deleteRequest(`/promotion/${promotionId}`);
-  }
-
-  async validate(promotionId: string, params?: {
-    subtotal?: number;
-    customerId?: string;
-  }): Promise<Promotion> {
-    return this.getRequest<Promotion>(`/promotion/${promotionId}/validate`, params);
   }
 }

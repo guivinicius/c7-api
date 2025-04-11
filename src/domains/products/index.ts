@@ -1,13 +1,13 @@
 import { Commerce7Client } from '../../client';
-import { Product, ProductListResponse } from './types';
+import { Product, ProductListResponse, ProductStatus } from './types';
 
 export class ProductsAPI extends Commerce7Client {
   async list(params?: {
     limit?: number;
     q?: string;
     updatedAt?: string;
-    webStatus?: string;
-    adminStatus?: string;
+    webStatus?: ProductStatus;
+    adminStatus?: ProductStatus;
     collectionId?: string;
   }): Promise<ProductListResponse> {
     return this.getRequest<ProductListResponse>('/product', params);

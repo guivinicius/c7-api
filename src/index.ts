@@ -21,25 +21,41 @@ export * from './domains/taxes';
 export * from './domains/vendors';
 export * from './domains/webhooks';
 
-// Re-export domain-specific types
-export * from './domains/clubs/types';
-export * from './domains/collections/types';
-export * from './domains/coupons/types';
-export * from './domains/customers/types';
-export * from './domains/departments/types';
-export * from './domains/gift-cards/types';
-export * from './domains/inventory/types';
-export * from './domains/inventory-location/types';
-export * from './domains/notes/types';
-export * from './domains/orders/types';
-export * from './domains/products/types';
-export * from './domains/promotions/types';
-export * from './domains/reservations/types';
-export * from './domains/shipping/types';
-export * from './domains/tags/types';
-export * from './domains/taxes/types';
-export * from './domains/vendors/types';
-export * from './domains/webhooks/types';
+// Re-export domain-specific types with explicit naming
+export type {
+  CustomerAddress,
+  CustomerCreditCard,
+  CustomerAddressListResponse,
+  ListAddressesResponse,
+  CreditCardCreateInput,
+  CreditCardListResponse
+} from './domains/customers/types';
+
+export type {
+  OrderAddress,
+  OrderCreditCard,
+  OrderShippingService,
+  OrderTax,
+  Order,
+  OrderItem,
+  Tender
+} from './domains/orders/types';
+
+export type {
+  ShippingServiceProvider,
+  ShippingRegion,
+  ShippingRate,
+  TopRate,
+  Shipping,
+  ShippingResponse
+} from './domains/shipping/types';
+
+export type {
+  Tax,
+  CreateTaxInput,
+  UpdateTaxInput,
+  TaxResponse
+} from './domains/taxes/types';
 
 // Re-export common types
 export * from './common/types/pagination';

@@ -84,7 +84,7 @@ export interface Customer {
   updatedAt: string;
 }
 
-export interface Address {
+export interface CustomerAddress {
   id: string;
   customerId: string;
   birthDate?: string;
@@ -104,16 +104,16 @@ export interface Address {
 }
 
 export interface CustomerAddressListResponse {
-  customerAddresses: Address[];
+  customerAddresses: CustomerAddress[];
   total: number;
 }
 
 export interface ListAddressesResponse {
-  customerAddresses: Address[];
+  customerAddresses: CustomerAddress[];
   total: number;
 }
 
-export interface CreditCard {
+export interface CustomerCreditCard {
   id: string;
   cardBrand: string;
   maskedCardNumber: string;
@@ -133,6 +133,6 @@ export interface CreditCardCreateInput {
 }
 
 export interface CreditCardListResponse {
-  customerCreditCards: CreditCard[];
+  customerCreditCards: CustomerCreditCard[];
   total: number;
 }
