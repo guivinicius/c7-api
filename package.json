@@ -1,6 +1,6 @@
 {
   "name": "c7-api",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
   "description": "TypeScript wrapper for the Commerce7 API (V1/V2) - Works in Node.js and browsers",
   "main": "dist/client.js",
   "types": "dist/client.d.ts",
@@ -36,5 +36,12 @@
     "terser": "^5.29.2",
     "ts-jest": "^29.3.1",
     "typescript": "^5.3.3"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
 }
