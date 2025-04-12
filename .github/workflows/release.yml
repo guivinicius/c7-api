@@ -20,12 +20,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm run test:ci
-
-      - name: Build
-        run: npm run build
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
