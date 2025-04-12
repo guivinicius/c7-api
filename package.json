@@ -1,6 +1,6 @@
 {
   "name": "c7-api",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "description": "JavaScript wrapper for the Commerce7 API - Works in Node.js and browsers",
   "type": "module",
   "main": "./src/index.js",
@@ -30,6 +30,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^16.5.0"
   },
   "devDependencies": {
     "gh-pages": "^6.1.1",

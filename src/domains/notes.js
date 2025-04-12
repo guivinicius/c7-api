@@ -20,8 +20,4 @@ export class NotesAPI extends Commerce7Client {
   async delete(noteId) {
     return this.deleteRequest(`/note/${noteId}`);
   }
-
-  async listByEntity(entityType, entityId) {
-    return this.getRequest("/note", { entityType, entityId });
-  }
 }

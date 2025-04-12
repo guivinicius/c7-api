@@ -20,12 +20,4 @@ export class ReservationsAPI extends Commerce7Client {
   async delete(reservationId) {
     return this.deleteRequest(`/reservation/${reservationId}`);
   }
-
-  async cancel(reservationId, reason) {
-    return this.postRequest(`/reservation/${reservationId}/cancel`, { reason });
-  }
-
-  async confirm(reservationId) {
-    return this.postRequest(`/reservation/${reservationId}/confirm`, {});
-  }
 }

@@ -89,7 +89,10 @@ export class NodeHTTPAdapter {
             if (response.status >= 200 && response.status < 300) {
               resolve(response);
             } else {
-              const error = new Error(`HTTP Error: ${response.status}`);
+              const error = new Error(`HTTP Error: ${response.status}`, {
+                cause: response.data,
+              });
+
               this.logDebug("Error:", error);
               reject(error);
             }

@@ -20,8 +20,4 @@ export class TagsAPI extends Commerce7Client {
   async delete(objectType, tagId) {
     return this.deleteRequest(`/tag/${objectType}/${tagId}`);
   }
-
-  async listByEntity(entityType, entityId) {
-    return this.getRequest(`/tag/${entityType}`, { entityId });
-  }
 }
