@@ -11,6 +11,12 @@
     },
     "./client": {
       "import": "./src/client.js"
+    },
+    "./adapters/node": {
+      "import": "./src/adapters/node/index.js"
+    },
+    "./adapters/web-api": {
+      "import": "./src/adapters/web-api/index.js"
     }
   },
   "scripts": {},

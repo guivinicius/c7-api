@@ -1,4 +1,6 @@
-export class BrowserHTTPAdapter {
+import { BaseClient } from "../../client.js";
+
+class WebAPIAdapter {
   constructor(config) {
     this.config = config;
   }
@@ -10,25 +12,6 @@ export class BrowserHTTPAdapter {
         console.dir(data, { depth: null });
       }
     }
-  }
-
-  buildURL(endpoint, params) {
-    const normalizedEndpoint = endpoint.startsWith("/")
-      ? endpoint
-      : `/${endpoint}`;
-
-    const url = new URL(this.config.baseURL);
-    url.pathname = url.pathname.replace(/\/$/, "") + normalizedEndpoint;
-
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          url.searchParams.append(key, String(value));
-        }
-      });
-    }
-
-    return url.toString();
   }
 
   async request(options) {
@@ -105,4 +88,25 @@ export class BrowserHTTPAdapter {
       throw error;
     }
   }
+
+  buildURL(endpoint, params) {
+    const normalizedEndpoint = endpoint.startsWith("/")
+      ? endpoint
+      : `/${endpoint}`;
+    const url = new URL(this.config.baseURL);
+    url.pathname = url.pathname.replace(/\/$/, "") + normalizedEndpoint;
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          url.searchParams.append(key, String(value));
+        }
+      });
+    }
+
+    return url.toString();
+  }
 }
+
+// Register the adapter
+BaseClient.registerAdapter(WebAPIAdapter);

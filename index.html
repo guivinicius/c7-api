@@ -134,9 +134,22 @@
     <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
     <script type="module">
-        import { Commerce7 } from './dist/client.js';
+        // Import the adapter first
+        import './src/adapters/web-api/index.js';
+        import { Commerce7 } from './src/index.js';
+        
         let term;
         let client;
+        let command = '';
+
+        function formatJSON(obj) {
+            const stringified = JSON.stringify(obj, null, 2);
+            const highlighted = stringified
+                .replace(/"(.*?)":/g, (match, p1) => `\x1b[36m"${p1}":\x1b[0m`) // Key
+                .replace(/:\s*"(.*?)"/g, (match, p1) => `: \x1b[32m"${p1}"\x1b[0m`) // String value
+                .replace(/:\s*(\d+)/g, (match, p1) => `: \x1b[33m${p1}\x1b[0m`); // Number value
+            return highlighted;
+        }
         
         function initTerminal() {
             term = new Terminal({
@@ -144,7 +157,8 @@
                 theme: {
                     background: '#1E1E1E',
                     foreground: '#E0E0E0'
-                }
+                },
+                convertEol: true
             });
             
             const fitAddon = new FitAddon.FitAddon();
@@ -155,6 +169,50 @@
             term.writeln('Commerce7 API Playground Terminal');
             term.writeln('Enter commands to interact with the API');
             term.writeln('');
+            promptUser();
+
+            // Handle user input
+            term.onData(async (data) => {
+                const code = data.charCodeAt(0);
+                if (code === 13) { // Enter key
+                    term.write('\r\n');
+                    if (command.trim()) {
+                        try {
+                            // Try to evaluate the command
+                            const result = await eval(`(async () => { return ${command} })()`);
+                            if (result && typeof result === 'object') {
+                                // Use formatted JSON output for API responses
+                                term.writeln(formatJSON(result));
+                            } else {
+                                term.writeln(String(result));
+                            }
+                        } catch (error) {
+                            term.writeln('\x1b[31mError: ' + error.message + '\x1b[0m');
+                        }
+                    }
+                    command = '';
+                    promptUser();
+                } else if (code === 127) { // Backspace
+                    if (command.length > 0) {
+                        command = command.slice(0, -1);
+                        term.write('\b \b');
+                    }
+                } else if (code < 32) { // Other control characters
+                    // Ignore
+                } else {
+                    command += data;
+                    term.write(data);
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                fitAddon.fit();
+            });
+        }
+
+        function promptUser() {
+            term.write('\r\n> ');
         }
 
         function initializeClient() {
@@ -178,6 +236,7 @@
             } catch (error) {
                 term.writeln(`Error initializing client: ${error.message}`);
             }
+            promptUser();
         }
 
         // Initialize terminal when page loads

@@ -1,36 +1,32 @@
-import { createHTTPAdapter } from "./adapters/index.js";
-
 export class BaseClient {
+  static adapter = null;
+
+  static registerAdapter(adapter) {
+    BaseClient.adapter = adapter;
+  }
+
   constructor(config = {}) {
+    if (!BaseClient.adapter) {
+      throw new Error(
+        "No adapter configured. Please import an adapter before creating a client.\nExample: import '@c7-api/adapters/node' or '@c7-api/adapters/web-api'"
+      );
+    }
+
+    if (!config.tenantId) {
+      throw new Error("Tenant ID is required");
+    }
+    if (!config.clientId) {
+      throw new Error("Client ID is required");
+    }
+    if (!config.clientSecret) {
+      throw new Error("Client Secret is required");
+    }
+
     const defaultHost = "https://api.commerce7.com";
-
-    const clientId = config.clientId || process.env.COMMERCE7_CLIENT_ID || "";
-    const clientSecret =
-      config.clientSecret || process.env.COMMERCE7_CLIENT_SECRET || "";
-
-    this.tenantId = config.tenantId || process.env.COMMERCE7_TENANT_ID || "";
-    this.apiVersion =
-      config.apiVersion || process.env.COMMERCE7_API_VERSION || "v1";
+    this.tenantId = config.tenantId;
+    this.apiVersion = config.apiVersion || "v1";
     this.debug = config.debug || false;
-    this.baseURL = `${
-      config.host || process.env.COMMERCE7_HOST || defaultHost
-    }/${this.apiVersion}`;
-
-    if (!this.tenantId) {
-      throw new Error(
-        "Tenant ID is required. Provide it via config or COMMERCE7_TENANT_ID environment variable."
-      );
-    }
-    if (!clientId) {
-      throw new Error(
-        "Client ID is required. Provide it via config or COMMERCE7_CLIENT_ID environment variable."
-      );
-    }
-    if (!clientSecret) {
-      throw new Error(
-        "Client Secret is required. Provide it via config or COMMERCE7_CLIENT_SECRET environment variable."
-      );
-    }
+    this.baseURL = `${config.host || defaultHost}/${this.apiVersion}`;
 
     const httpConfig = {
       baseURL: this.baseURL,
@@ -39,13 +35,13 @@ export class BaseClient {
         tenant: this.tenantId,
       },
       auth: {
-        username: clientId,
-        password: clientSecret,
+        username: config.clientId,
+        password: config.clientSecret,
       },
       debug: this.debug,
     };
 
-    this.client = createHTTPAdapter(httpConfig);
+    this.client = new BaseClient.adapter(httpConfig);
   }
 
   // Base request methods

@@ -1,9 +1,19 @@
 import * as http from "http";
 import * as https from "https";
-import { URL } from "url";
+import { BaseClient } from "../../client.js";
 
-export class NodeHTTPAdapter {
+class NodeAdapter {
   constructor(config) {
+    // Process environment variables for Node.js environment
+    config = {
+      ...config,
+      tenantId: config.tenantId || process.env.COMMERCE7_TENANT_ID,
+      clientId: config.clientId || process.env.COMMERCE7_CLIENT_ID,
+      clientSecret: config.clientSecret || process.env.COMMERCE7_CLIENT_SECRET,
+      host: config.host || process.env.COMMERCE7_HOST,
+      apiVersion: config.apiVersion || process.env.COMMERCE7_API_VERSION,
+    };
+
     this.config = config;
   }
 
@@ -14,25 +24,6 @@ export class NodeHTTPAdapter {
         console.dir(data, { depth: null, colors: true });
       }
     }
-  }
-
-  buildURL(endpoint, params) {
-    const normalizedEndpoint = endpoint.startsWith("/")
-      ? endpoint
-      : `/${endpoint}`;
-
-    const url = new URL(this.config.baseURL);
-    url.pathname = url.pathname.replace(/\/$/, "") + normalizedEndpoint;
-
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          url.searchParams.append(key, String(value));
-        }
-      });
-    }
-
-    return url.toString();
   }
 
   async request(options) {
@@ -92,7 +83,6 @@ export class NodeHTTPAdapter {
               const error = new Error(`HTTP Error: ${response.status}`, {
                 cause: response.data,
               });
-
               this.logDebug("Error:", error);
               reject(error);
             }
@@ -112,4 +102,25 @@ export class NodeHTTPAdapter {
       req.end();
     });
   }
+
+  buildURL(endpoint, params) {
+    const normalizedEndpoint = endpoint.startsWith("/")
+      ? endpoint
+      : `/${endpoint}`;
+    const url = new URL(this.config.baseURL);
+    url.pathname = url.pathname.replace(/\/$/, "") + normalizedEndpoint;
+
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          url.searchParams.append(key, String(value));
+        }
+      });
+    }
+
+    return url.toString();
+  }
 }
+
+// Register the adapter
+BaseClient.registerAdapter(NodeAdapter);
