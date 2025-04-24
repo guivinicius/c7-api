@@ -8,14 +8,6 @@ A JavaScript wrapper for the Commerce7 API that works in both Node.js and browse
 npm install c7-api
 ```
 
-## Environment Support
-
-This package works in:
-- Node.js (using built-in http/https modules)
-- Browsers (using fetch API)
-
-The appropriate HTTP client must be imported based on your runtime environment.
-
 ## Usage
 
 ### Node.js
@@ -26,25 +18,9 @@ import '@c7-api/adapters/node';
 import { Commerce7 } from 'c7-api';
 
 const client = new Commerce7({
-  tenantId: 'your-tenant-id',
-  clientId: 'your-client-id',
-  clientSecret: 'your-client-secret',
-  debug: true, // Optional, enables debug logging
-  apiVersion: 'v1' // Optional, defaults to v1
-});
-```
-
-### Browser
-
-```javascript
-// Import the Web API adapter first
-import '@c7-api/adapters/web-api';
-import { Commerce7 } from 'c7-api';
-
-const client = new Commerce7({
-  tenantId: 'your-tenant-id',
-  clientId: 'your-client-id',
-  clientSecret: 'your-client-secret',
+  tenantId: process.env.COMMERCE7_TENANT_ID,
+  clientId: process.env.COMMERCE7_CLIENT_ID,
+  clientSecret: process.env.COMMERCE7_CLIENT_SECRET,
   debug: true, // Optional, enables debug logging
   apiVersion: 'v1' // Optional, defaults to v1
 });
